@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %} Login {% endblock title %}
+
+{% block content %}
+
+
+    {% for message in messages %}
+        <div class="alert alert-primary alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+
+    {% endfor %}
+
+    <div class="container mt-5 w-50">
+        <h1>Welcome to twitter</h1>
+        <h2>Login</h2>
+        <form method="post">{% csrf_token %}
+            {{ form|crispy }}
+            <center>
+                <button type="submit" class="btn btn-primary btn-lg btn-block" style="width: 50%"> register</button>
+                <p class="mt-2">You do not have an account??<a href="{% url 'login' %}">Sing up here.</a></p>
+            </center>
+        </form>
+    </div>
+
+{% endblock %}
+
