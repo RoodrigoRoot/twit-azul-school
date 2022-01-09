@@ -3,7 +3,6 @@ from django.shortcuts import render, redirect, reverse
 from django.contrib import messages
 from accounts.forms import UserForm, ProfileForm, LoginForm
 from django.views import View
-from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 # Create your views here.
 
@@ -73,6 +72,19 @@ class LoginView(View):
         else:
             form = LoginForm()
         return render(request, self.template_name, locals())
+
+
+class ProfileGetUpdateView(View):
+    template_name = 'users/profile.html'
+
+    def get(self, request, username):
+        form = ProfileForm()
+        user = User.objects.get(username=username)
+        return render(request, self.template_name, locals())
+
+    def post(self, request, username):
+        print(request.POST)
+        return redirect(reverse('profile', kwargs={'username': username}))
 
 
 

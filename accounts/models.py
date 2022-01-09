@@ -12,6 +12,6 @@ class Profile(models.Model):
     date_birth = models.DateField()
     profile_picture = models.ImageField(null=True, blank=True)
     background_picture = models.ImageField(null=True, blank=True)
-    create_at = models.DateTimeField(auto_now_add=True)
+    create_at = models.DateField(auto_now_add=True)
     update_at = models.DateTimeField(auto_now=True)
 
