@@ -26,14 +26,18 @@
     <div class="container">
         <div class="row">
             <div class="col-3 mt-5">
-                <div class="list-group">
-                    <a href="{% url 'index' %}" type="button" class="list-group-item list-group-item-action">Home</a>
-                        <a href="{% url 'profile' username=request.user.username %}" type="button" class="list-group-item list-group-item-action">Profile</a>
-                    <button type="button" class="btn btn-primary rounded-pill mt-3" data-bs-toggle="modal"
-                            data-bs-target="#twit">
-                        Twitear
-                    </button>
-                </div>
+                {% if request.user.is_authenticated %}
+                    <div class="list-group">
+                        <a href="{% url 'index' %}" type="button"
+                           class="list-group-item list-group-item-action">Home</a>
+                        <a href="{% url 'profile' username=user.username %}" type="button"
+                           class="list-group-item list-group-item-action">Profile</a>
+                        <button type="button" class="btn btn-primary rounded-pill mt-3" data-bs-toggle="modal"
+                                data-bs-target="#twit-modal">
+                            Twitear
+                        </button>
+                    </div>
+                {% endif %}
             </div>
             <div class="col-6">
                 <div class="border p-2">
@@ -59,7 +63,7 @@
                         <p style="margin-left: 3rem">450 Following</p>
                     </div>
                 </div>
-                <ul class="nav nav-tabs d-flex justify-content-between" id="myTab" role="tablist">
+                <ul class="nav nav-tabs d-flex justify-content-between border" id="myTab" role="tablist">
                     <li class="nav-item" role="presentation">
                         <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home"
                                 type="button" role="tab" aria-controls="home" aria-selected="true">Twit
@@ -77,21 +81,30 @@
                         </button>
                     </li>
                 </ul>
-                <div class="tab-content" id="myTabContent">
+                <div class="tab-content border" style="height: 100vh" id="myTabContent">
                     <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
-                        <div class="card" style="width: 100%">
-                            <div class="card-body">
-                                <h5 class="card-title">Card title</h5>
-                                <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
-                                <p class="card-text">Some quick example text to build on the card title and make up the
-                                    bulk of the card's content.</p>
-                                <div class="d-flex justify-content-evenly">
-                                    <button class="btn">comment</button>
-                                    <button class="btn">retwit</button>
-                                    <button class="btn">like</button>
+                        {% for twit in twits %}
+                            <div class="card" style="width: 100%">
+                                <div class="card-body">
+                                    <h6 class="card-title">
+                                        <div class="d-flex justify-content-start align-items-center">
+                                            <img style="width: 2rem; height: 2rem" class="rounded-circle"
+                                                 src="{{ twit.author.profile.background_picture.url }}" alt="user">
+                                            <label style="margin: 0px 5px">{{ twit.author.get_full_name }}
+                                            </label> <label class="text-muted">@{{ twit.author.username }}</label>
+                                            ·
+                                            <label>{{ twit.created_at }}</label>
+                                        </div>
+                                    </h6>
+                                    <p class="card-text" style="margin-left: 2.5rem">{{ twit.twit }}</p>
+                                    <div class="d-flex justify-content-evenly">
+                                        <button class="btn">comment</button>
+                                        <button class="btn">retwit</button>
+                                        <button class="btn">like</button>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        {% endfor %}
                     </div>
                     <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">...</div>
                     <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">...</div>
@@ -137,19 +150,22 @@
             </div>
         </div>
     </div>
-        <div class="modal fade" id="twit" tabindex="-1" aria-labelledby="twitModal" aria-hidden="true">
+    <div class="modal fade" id="twit-modal" tabindex="-1" aria-labelledby="twitModal" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
+                <form action="{% url 'twit:create-twit' %}?url=profile" method="post"> {% csrf_token %}
                 <div class="modal-body">
-                    <textarea style="width: 100%; border: none; outline: none" placeholder="What's happening?"></textarea>
+                    <textarea style="width: 100%; border: none; outline: none" name="twit" id="twit" required
+                              placeholder="What's happening?"></textarea>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Save changes</button>
+                    <button type="submit" class="btn btn-primary">Save changes</button>
                 </div>
+                    </form>
             </div>
         </div>
     </div>
