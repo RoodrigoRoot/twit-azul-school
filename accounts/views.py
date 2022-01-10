@@ -1,9 +1,10 @@
 from django.contrib.auth import authenticate, login
-from django.shortcuts import render, redirect, reverse
+from django.shortcuts import render, redirect, reverse, get_object_or_404
 from django.contrib import messages
 from accounts.forms import UserForm, ProfileForm, LoginForm
 from django.views import View
 from django.contrib.auth.models import User
+from twit.models import Twit
 # Create your views here.
 
 
@@ -79,7 +80,8 @@ class ProfileGetUpdateView(View):
 
     def get(self, request, username):
         form = ProfileForm()
-        user = User.objects.get(username=username)
+        user = get_object_or_404(User, username=username)
+        twits = Twit.objects.filter(author=user)
         return render(request, self.template_name, locals())
 
     def post(self, request, username):
