@@ -15,3 +15,6 @@ class Profile(models.Model):
     create_at = models.DateField(auto_now_add=True)
     update_at = models.DateTimeField(auto_now=True)
 
+    def __str__(self) -> str:
+        return self.user.username
+

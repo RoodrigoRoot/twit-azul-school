@@ -47,8 +47,10 @@ Twit
                                 <div class="d-flex justify-content-start align-items-center">
                                     <img style="width: 2rem; height: 2rem" class="rounded-circle"
                                         src="{{ twit.author.profile.background_picture.url }}" alt="user">
-                                    <label style="margin: 0px 5px">{{ twit.author.get_full_name }}
-                                    </label> <label class="text-muted">@{{ twit.author.username }}</label>
+                                    <a href="{% url 'profile' username=twit.author%}">
+                                        <label style="margin: 0px 5px">{{ twit.author.get_full_name }}
+                                        </label> <label class="text-muted">@{{ twit.author.username }}</label>
+                                    </a>
                                     ·
                                     <label>{{ twit.created_at }}</label>
                                 </div>
