@@ -79,15 +79,20 @@ class ProfileGetUpdateView(View):
     template_name = 'users/profile.html'
 
     def get(self, request, username):
-        form = ProfileForm()
         user = get_object_or_404(User, username=username)
+        form = ProfileForm(instance=user.profile)
         twits = Twit.objects.filter(author=user)
         return render(request, self.template_name, locals())
 
     def post(self, request, username):
-        print(request.POST)
-        return redirect(reverse('profile', kwargs={'username': username}))
-
+        user = get_object_or_404(User, username=username)
+        form = ProfileForm(request.POST, instance=user.profile)
+        if form.is_valid():
+            form.save()
+            return redirect(reverse('profile', kwargs={'username': username}))
+        else:
+            form = ProfileForm()
+            return render(request, self.template_name, locals())
 
 
 

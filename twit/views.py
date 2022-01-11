@@ -58,5 +58,5 @@ class LikeCreateView(View):
         like.like = not like.like
         like.save()
         if has_user:
-            return redirect(reverse(url_parameter, kwargs={'username': request.user.username}))
+            return redirect(reverse(url_parameter, kwargs={'username': request.POST['user']}))
         return redirect(reverse(url_parameter))
