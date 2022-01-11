@@ -1,10 +1,12 @@
+from django.contrib import auth
 from django.contrib.auth import authenticate, login
 from django.shortcuts import render, redirect, reverse, get_object_or_404
 from django.contrib import messages
 from accounts.forms import UserForm, ProfileForm, LoginForm
 from django.views import View
 from django.contrib.auth.models import User
-from twit.models import Twit
+from twit.models import Twit, ReTwit
+from itertools import chain
 # Create your views here.
 
 
@@ -82,6 +84,8 @@ class ProfileGetUpdateView(View):
         user = get_object_or_404(User, username=username)
         form = ProfileForm(instance=user.profile)
         twits = Twit.objects.filter(author=user)
+        retwits = ReTwit.objects.filter(author=user)
+        twits = list(chain(twits, retwits))[::-1]
         return render(request, self.template_name, locals())
 
     def post(self, request, username):
