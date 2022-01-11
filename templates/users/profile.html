@@ -5,7 +5,7 @@
 {% block title %} Profile {{ user.username|capfirst }} {% endblock title %}
 {% block style %}
     <style>
-        #profile {
+        #img-profile {
             width: 8rem;
             height: 8rem;
             border-radius: 100px;
@@ -43,7 +43,7 @@
                 <div class="border p-2">
                     <img src="{{ user.profile.profile_picture.url }}" alt="background" id="background">
                     <div class="d-flex align-items-center justify-content-between">
-                        <img src="{{ user.profile.background_picture.url }}" alt="profile" id="profile">
+                        <img src="{{ user.profile.background_picture.url }}" alt="profile" id="img-profile">
                         <div>
                             <button type="button" class="btn btn-primary" data-bs-toggle="modal"
                                     data-bs-target="#exampleModal">
@@ -98,16 +98,28 @@
                                     </h6>
                                     <p class="card-text" style="margin-left: 2.5rem">{{ twit.twit }}</p>
                                     <div class="d-flex justify-content-evenly">
-                                        <button class="btn">comment</button>
+                                        <a href="{% url 'twit:comment' pk=twit.pk%}" class="btn">comment</a>
                                         <button class="btn">retwit</button>
+                                        <form method="post" action="{% url 'twit:like' pk=twit.pk%}?url=profile&user=true">{% csrf_token %}
+                                        <input value="like" name="like" id="like" type="submit" class="btn"
+                                        {% if twit.like_set %}
+                                            {% for like in twit.like_set.all %}
+                                                {% if like.author == request.user and like.like == True %}
+                                                    style="color: blue;"
+                                                {% endif %}
+                                            {% endfor %}
+                                            >
+                                        {% else %}
                                         <button class="btn">like</button>
+                                        {% endif %}
+                                    </form>
                                     </div>
                                 </div>
                             </div>
                         {% endfor %}
                     </div>
-                    <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">...</div>
-                    <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">...</div>
+                    <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">profile</div>
+                    <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">likes</div>
                 </div>
             </div>
             <div class="col-3 mt-1">
@@ -119,7 +131,6 @@
                 </div>
             </div>
         </div>
-
 
     </div>
 
@@ -156,7 +167,7 @@
                 <div class="modal-header">
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form action="{% url 'twit:create-twit' %}?url=profile" method="post"> {% csrf_token %}
+                <form action="{% url 'twit:create-twit' %}?url=profile&user=true" method="post"> {% csrf_token %}
                 <div class="modal-body">
                     <textarea style="width: 100%; border: none; outline: none" name="twit" id="twit" required
                               placeholder="What's happening?"></textarea>

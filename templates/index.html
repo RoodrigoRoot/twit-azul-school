@@ -2,102 +2,114 @@
 {% load static %}
 
 {% block title %}
-    Twit
+Twit
 {% endblock title %}
 {% block style %}
-    <style>
-        textarea {
-            resize: none;
-            width: 100%;
-            outline: none;
-            border: none;
-        }
-    </style>
+<style>
+    textarea {
+        resize: none;
+        width: 100%;
+        outline: none;
+        border: none;
+    }
+</style>
 {% endblock style %}
 {% block content %}
-    <div class="container ">
-        <div class="row align-items-start">
-            <div class="row">
-                <div class="col-3 mt-5">
-                    {% if request.user.is_authenticated %}
-                        <div class="list-group">
-                            <a href="{% url 'index' %}" type="button" class="list-group-item list-group-item-action">Home</a>
-                            <a href="{% url 'profile' username=user.username %}" type="button"
-                               class="list-group-item list-group-item-action">Profile</a>
-                            <button type="button" class="btn btn-primary rounded-pill mt-3" data-bs-toggle="modal"
-                                    data-bs-target="#twit-modal">
-                                Twitear
-                            </button>
-                        </div>
-                    {% endif %}
+<div class="container ">
+    <div class="row align-items-start">
+        <div class="row">
+            <div class="col-3 mt-5">
+                {% if request.user.is_authenticated %}
+                <div class="list-group">
+                    <a href="{% url 'index' %}" type="button" class="list-group-item list-group-item-action">Home</a>
+                    <a href="{% url 'profile' username=user.username %}" type="button"
+                        class="list-group-item list-group-item-action">Profile</a>
+                    <button type="button" class="btn btn-primary rounded-pill mt-3" data-bs-toggle="modal"
+                        data-bs-target="#twit-modal">
+                        Twitear
+                    </button>
                 </div>
-                <div class="col-6">
-                    <div class="border">
-                        <form action="{% url 'twit:create-twit' %}?url=index" method="post">{% csrf_token %}
-                        <p class="fs-3">Inicio</p>
+                {% endif %}
+            </div>
+            <div class="col-6">
+                <div class="border">
+                    <form action="{% url 'twit:create-twit' %}?url=index" method="post">{% csrf_token %}
+                        <p class="fs-3">Home</p>
                         <textarea name="twit" id="twit" class="mb-3" placeholder="What's happening?"></textarea>
                         <button type="submit" class="btn btn-primary rounded-pill mb-3">Twitear</button>
-                            </form>
-                    </div>
-                    <div style="height: 750px" class="border">
-                    {% for twit in twits %}
-                            <div class="card" style="width: 100%">
-                                <div class="card-body">
-                                    <h6 class="card-title">
-                                        <div class="d-flex justify-content-start align-items-center">
-                                            <img style="width: 2rem; height: 2rem" class="rounded-circle"
-                                                 src="{{ twit.author.profile.background_picture.url }}" alt="user">
-                                            <label style="margin: 0px 5px">{{ twit.author.get_full_name }}
-                                            </label> <label class="text-muted">@{{ twit.author.username }}</label>
-                                            ·
-                                            <label>{{ twit.created_at }}</label>
-                                        </div>
-                                    </h6>
-                                    <p class="card-text" style="margin-left: 2.5rem">{{ twit.twit }}</p>
-                                    <div class="d-flex justify-content-evenly">
-                                        <button class="btn">comment</button>
-                                        <button class="btn">retwit</button>
-                                        <button class="btn">like</button>
-                                    </div>
-                                </div>
-                            </div>
-                        {% endfor %}
-                    </div>
+                    </form>
                 </div>
-                <div class="col-3 mt-1">
-                    <div class="row">
-                        <div class="col">
-                            <input type="text" class="form-control rounded-pill" placeholder="Search in Twit"
-                                   aria-label="First name">
+                <div style="height: 750px" class="border">
+                    {% for twit in twits %}
+                    <div class="card" style="width: 100%">
+                        <div class="card-body">
+                            <h6 class="card-title">
+                                <div class="d-flex justify-content-start align-items-center">
+                                    <img style="width: 2rem; height: 2rem" class="rounded-circle"
+                                        src="{{ twit.author.profile.background_picture.url }}" alt="user">
+                                    <label style="margin: 0px 5px">{{ twit.author.get_full_name }}
+                                    </label> <label class="text-muted">@{{ twit.author.username }}</label>
+                                    ·
+                                    <label>{{ twit.created_at }}</label>
+                                </div>
+                            </h6>
+                            <p class="card-text" style="margin-left: 2.5rem">{{ twit.twit }}</p>
+                            <div class="d-flex justify-content-evenly">
+                                <a href="{% url 'twit:comment' pk=twit.pk %}" class="btn">comment</a>
+                                <button class="btn">retwit</button>
+                                <form method="post" action="{% url 'twit:like' pk=twit.pk %}?url=index">{% csrf_token %}
+                                    <input value="like" name="like" id="like" type="submit" class="btn"
+                                    {% if twit.like_set %}
+                                        {% for like in twit.like_set.all %}
+                                            {% if like.author == request.user and like.like == True %}
+                                                style="color: blue;"
+                                            {% endif %}
+                                        {% endfor %}
+                                        >
+                                    {% else %}
+                                    <button class="btn">like</button>
+                                    {% endif %}
+                                    </form>
+                            </div>
                         </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="col-3 mt-1">
+                <div class="row">
+                    <div class="col">
+                        <input type="text" class="form-control rounded-pill" placeholder="Search in Twit"
+                            aria-label="First name">
                     </div>
                 </div>
             </div>
         </div>
-
     </div>
-    <!-- Button trigger modal -->
+
+</div>
+<!-- Button trigger modal -->
 
 
-    <!-- Modal -->
-    <div  class="modal fade" id="twit-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <form action="{% url 'twit:create-twit' %}?url=index" method="post">{% csrf_token %}
+<!-- Modal -->
+<div class="modal fade" id="twit-modal" tabindex="-1" aria-labelledby="twitModal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="{% url 'twit:create-twit' %}?url=index" method="post">
                 <div class="modal-body">
-                    <textarea style="width: 100%; border: none; outline: none" name="twit" id="twit"
-                              placeholder="What's happening?"></textarea>
+                    {% csrf_token %}
+                    <textarea style="width: 100%; border: none; outline: none" name="twit" id="twit-2" required
+                            placeholder="What's happening?"></textarea>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     <button type="submit" class="btn btn-primary">Save changes</button>
                 </div>
-                    </form>
-            </div>
+                </form>
         </div>
     </div>
+</div>
 {% endblock %}
-
