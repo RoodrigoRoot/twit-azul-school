@@ -1,7 +1,7 @@
-from django.shortcuts import render, redirect, reverse, resolve_url
-from twit.models import Twit
+from django.shortcuts import render, redirect, reverse
+from twit.models import Twit, Comment, Like
 from django.views import View
-from twit.forms import TwitForm
+from twit.forms import TwitForm, CommentForm
 from django.http.response import JsonResponse
 # Create your views here.
 
@@ -25,5 +25,38 @@ class CreateTwit(View):
             return JsonResponse({'error': 'KO'})
 
 
+class CommentCreateView(View):
+
+    template_name = 'twits/comments.html'
+
+    def get(self, request, pk):
+        twit = Twit.objects.get(pk=pk)
+        form = CommentForm()
+        return render(request, self.template_name, locals())
+
+    def post(self, request, pk):
+        twit = Twit.objects.get(pk=pk)
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            comment = Comment.objects.create(
+                twit=twit,
+                author=request.user,
+                comment=form.cleaned_data["comment"]
+            )
+        else:
+            form = CommentForm()
+        return render(request, self.template_name, locals())
 
 
+class LikeCreateView(View):
+
+    def post(self, request, pk):
+        url_parameter = request.GET.get('url', 'index')
+        has_user = request.GET.get('user', False)
+        twit = Twit.objects.get(pk=pk)
+        like, _ = twit.like_set.get_or_create(author=request.user)
+        like.like = not like.like
+        like.save()
+        if has_user:
+            return redirect(reverse(url_parameter, kwargs={'username': request.user.username}))
+        return redirect(reverse(url_parameter))

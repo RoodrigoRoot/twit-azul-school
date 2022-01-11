@@ -10,6 +10,7 @@ class DatesCreateUpdatedAbstract(models.Model):
 
     class Meta:
         abstract = True
+        ordering = ["-created_at"]
 
 
 class Twit(DatesCreateUpdatedAbstract):
@@ -23,4 +24,31 @@ class Twit(DatesCreateUpdatedAbstract):
     class Meta:
         verbose_name = "Twit"
         verbose_name_plural = "Twits"
-        ordering = ["-created_at"]
+
+
+class Comment(DatesCreateUpdatedAbstract):
+
+    twit = models.ForeignKey(Twit, on_delete=models.CASCADE)
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    comment = models.CharField(max_length=150)
+
+    def __str__(self) -> str:
+        return f"{self.twit}"
+
+    class Meta:
+        verbose_name = "Comment"
+        verbose_name_plural = "Comments"
+
+
+class Like(DatesCreateUpdatedAbstract):
+
+    twit = models.ForeignKey(Twit, on_delete=models.CASCADE)
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    like = models.BooleanField(default=False)
+
+    def __str__(self) -> str:
+        return self.author.username
+
+    class Meta:
+        verbose_name = "Like"
+        verbose_name_plural = "Likes"
