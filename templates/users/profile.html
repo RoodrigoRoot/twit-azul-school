@@ -84,9 +84,48 @@
                 <div class="tab-content border" style="height: 100vh" id="myTabContent">
                     <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
                         {% for twit in twits %}
+                        {% if twit.retwit %}
+                            <p>Retited by {{twit.author}}</p>
                             <div class="card" style="width: 100%">
                                 <div class="card-body">
                                     <h6 class="card-title">
+                                        <div class="d-flex justify-content-start align-items-center">
+                                            <img style="width: 2rem; height: 2rem" class="rounded-circle"
+                                                 src="{{ twit.twit.author.profile.background_picture.url }}" alt="user">
+                                            <a href="{% url 'profile' username=user.username %}">
+                                                <label style="margin: 0px 5px">{{ twit.twit.author.get_full_name }}
+                                                </label> <label class="text-muted">@{{ twit.twit.author.username }}</label>
+                                            </a>
+                                            ·
+                                            <label>{{ twit.created_at }}</label>
+                                        </div>
+                                    </h6>
+                                    <p class="card-text" style="margin-left: 2.5rem">{{ twit.twit.twit }}</p>
+                                    <div class="d-flex justify-content-evenly">
+                                        <a href="{% url 'twit:comment' pk=twit.pk%}" class="btn">comment</a>
+                                        <button class="btn">retwit</button>
+                                        <form method="post" action="{% url 'twit:like' pk=twit.pk%}?url=profile&user=true">{% csrf_token %}
+                                        <input value="like" name="like" id="like" type="submit" class="btn"
+                                        {% if twit.like_set %}
+                                            {% for like in twit.like_set.all %}
+                                                {% if like.author == request.user and like.like == True %}
+                                                    style="color: blue;"
+                                                {% endif %}
+                                            {% endfor %}
+                                            >
+                                            <input type="hidden" value="{{ twit.author }}" name="user"/>
+                                        {% else %}
+                                        <button class="btn">like</button>
+                                        {% endif %}
+                                    </form>
+                                    </div>
+                                </div>
+                            </div>
+                            {% else %}
+                            <div class="card" style="width: 100%">
+                                <div class="card-body">
+                                    <h6 class="card-title">
+                                        
                                         <div class="d-flex justify-content-start align-items-center">
                                             <img style="width: 2rem; height: 2rem" class="rounded-circle"
                                                  src="{{ twit.author.profile.background_picture.url }}" alt="user">
@@ -119,6 +158,8 @@
                                     </div>
                                 </div>
                             </div>
+                        {% endif %}
+                            
                         {% endfor %}
                     </div>
                     <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">profile</div>
