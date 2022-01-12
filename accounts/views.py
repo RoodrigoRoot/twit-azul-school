@@ -5,6 +5,7 @@ from django.contrib import messages
 from accounts.forms import UserForm, ProfileForm, LoginForm
 from django.views import View
 from django.contrib.auth.models import User
+from accounts.models import Follow
 from twit.models import Twit, ReTwit
 from itertools import chain
 # Create your views here.
@@ -99,4 +100,15 @@ class ProfileGetUpdateView(View):
             return render(request, self.template_name, locals())
 
 
+class FollowCreateView(View):
 
+
+    def post(self, request):
+        username_to_follow = request.GET.get('username', '')
+        user_to_follow = User.objects.get(username=username_to_follow)
+        user = request.user
+        Follow.objects.create(
+            user=user,
+            to_follow=user_to_follow
+        )
+        return redirect(reverse('profile', kwargs={'username': user_to_follow}))

@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, reverse
-from twit.models import Twit, Comment, Like
+from twit.models import Twit, Comment, Like, ReTwit
 from django.views import View
 from twit.forms import TwitForm, CommentForm
 from django.http.response import JsonResponse
