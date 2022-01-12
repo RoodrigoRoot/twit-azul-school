@@ -18,3 +18,15 @@ class Profile(models.Model):
     def __str__(self) -> str:
         return self.user.username
 
+
+class Follow(models.Model):
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='following')
+    to_follow = models.ForeignKey(User, on_delete=models.CASCADE, related_name='followers')
+
+    created_at = models.DateField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self) -> str:
+        return f"{self.user} following to {self.to_follow}"
+ 

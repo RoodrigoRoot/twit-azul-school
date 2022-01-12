@@ -1,6 +1,7 @@
 from django.shortcuts import render, reverse, redirect
 from django.views import View
 from twit.models import Twit
+from accounts.models import Follow
 # Create your views here.
 
 

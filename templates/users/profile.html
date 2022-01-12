@@ -28,7 +28,7 @@
             <div class="col-3 mt-5">
                 {% if request.user.is_authenticated %}
                     <div class="list-group">
-                        <a href="{% url 'index' %}" type="button"
+                        <a href="{% url 'core:index' %}" type="button"
                            class="list-group-item list-group-item-action">Home</a>
                         <a href="{% url 'profile' username=user.username %}" type="button"
                            class="list-group-item list-group-item-action">Profile</a>
@@ -45,10 +45,17 @@
                     <div class="d-flex align-items-center justify-content-between">
                         <img src="{{ user.profile.background_picture.url }}" alt="profile" id="img-profile">
                         <div>
+                            {% if user.username == request.user.username%}
                             <button type="button" class="btn btn-primary" data-bs-toggle="modal"
                                     data-bs-target="#exampleModal">
                                 Edit your profile
                             </button>
+                            {% else %}
+                            <form method="post" action="{% url 'following' %}?username={{user.username}}">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-primary">Follow</button>
+                            </form>
+                            {% endif %}
                         </div>
                     </div>
                     <p>{{ user.get_full_name }}</p>
@@ -59,8 +66,8 @@
                         <p style="margin-left: 3rem">Joined in {{ user.profile.create_at }}</p>
                     </div>
                     <div class="d-flex">
-                        <p>450 Followers</p>
-                        <p style="margin-left: 3rem">450 Following</p>
+                        <p>{{ user.followers.count}} Followers</p>
+                        <p style="margin-left: 3rem">{{ user.following.count}} Following</p>
                     </div>
                 </div>
                 <ul class="nav nav-tabs d-flex justify-content-between border" id="myTab" role="tablist">
@@ -71,7 +78,7 @@
                     </li>
                     <li class="nav-item" role="presentation">
                         <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile"
-                                type="button" role="tab" aria-controls="profile" aria-selected="false">Twits and
+                                type="button" role="tab" aria-controls="profile" aria-selected="false">
                             responses
                         </button>
                     </li>
@@ -114,8 +121,6 @@
                                             {% endfor %}
                                             >
                                             <input type="hidden" value="{{ twit.author }}" name="user"/>
-                                        {% else %}
-                                        <button class="btn">like</button>
                                         {% endif %}
                                     </form>
                                     </div>
@@ -125,7 +130,6 @@
                             <div class="card" style="width: 100%">
                                 <div class="card-body">
                                     <h6 class="card-title">
-                                        
                                         <div class="d-flex justify-content-start align-items-center">
                                             <img style="width: 2rem; height: 2rem" class="rounded-circle"
                                                  src="{{ twit.author.profile.background_picture.url }}" alt="user">
