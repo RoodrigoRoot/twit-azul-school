@@ -1,56 +1,14 @@
+## Instrucciones
+Para correr este proyecto se necesita tener python instalado y virtualenvs
 
-## Data
-
-### User
-
-- Username
-- First name
-- Last name
-- email
-- password
-
-### Account
-
-- Biography
-- Location
-- website
-- Date of birth
-- Profile picture
-- Background picture
-- Creation date
-
-
-### Follow
-
-- Following FK (User)
-- Followers FK (User)
-
-### Twitt
-
-- Author FK(User)
-- Creation date
-- Update date
-- Twitt
-
-### Comment
-
-- Author FK(User)
-- Creation date
-- Update date
-- Comment
-
-### Like
-
-- Author (User)
-- Creation date
-- Update date
-- Comment FK(Comment)
-
-
-### Retwit
-
-- Author (User)
-- Creation date
-- Update date
-- Twitt FK(Comment)
-
+### Pasos:
+- Clonar este repositorio
+- Entrar dentro de la carpeta clonada
+- Ejecutar el siguiente comando: python3 -m venv env
+- Entrar dentro de la carpeta env
+- activar el entorno: source bin/activate (Linux/Mac) source scripts/activate(windows)
+- salir de la carpeta env/
+- ejecutar el comando: python3 manage.py migrate
+- ejecutar el comando: python3 manage.py createsuperuser
+- ejecutar el comando: python3 manage.py runserver
+- Probar el proyecto
