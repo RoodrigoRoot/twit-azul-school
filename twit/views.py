@@ -51,7 +51,7 @@ class CommentCreateView(View):
 class LikeCreateView(View):
 
     def post(self, request, pk):
-        url_parameter = request.GET.get('url', 'index')
+        url_parameter = request.GET.get('url', '')
         has_user = request.GET.get('user', False)
         twit = Twit.objects.get(pk=pk)
         like, _ = twit.like_set.get_or_create(author=request.user)

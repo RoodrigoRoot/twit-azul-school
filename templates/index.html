@@ -21,7 +21,7 @@ Twit
             <div class="col-3 mt-5">
                 {% if request.user.is_authenticated %}
                 <div class="list-group">
-                    <a href="{% url 'core:index' %}" type="button" class="list-group-item list-group-item-action">Home</a>
+                    <a href="{% url 'index' %}" type="button" class="list-group-item list-group-item-action">Home</a>
                     <a href="{% url 'profile' username=user.username %}" type="button"
                         class="list-group-item list-group-item-action">Profile</a>
                     <button type="button" class="btn btn-primary rounded-pill mt-3" data-bs-toggle="modal"

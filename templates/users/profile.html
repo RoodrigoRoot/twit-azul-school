@@ -28,9 +28,9 @@
             <div class="col-3 mt-5">
                 {% if request.user.is_authenticated %}
                     <div class="list-group">
-                        <a href="{% url 'core:index' %}" type="button"
+                        <a href="{% url 'index' %}" type="button"
                            class="list-group-item list-group-item-action">Home</a>
-                        <a href="{% url 'profile' username=user.username %}" type="button"
+                        <a href="{% url 'profile' username=request.user.username %}" type="button"
                            class="list-group-item list-group-item-action">Profile</a>
                         <button type="button" class="btn btn-primary rounded-pill mt-3" data-bs-toggle="modal"
                                 data-bs-target="#twit-modal">
@@ -99,7 +99,7 @@
                                         <div class="d-flex justify-content-start align-items-center">
                                             <img style="width: 2rem; height: 2rem" class="rounded-circle"
                                                  src="{{ twit.twit.author.profile.background_picture.url }}" alt="user">
-                                            <a href="{% url 'profile' username=user.username %}">
+                                            <a href="{% url 'profile' username=twit.twit.author.username %}">
                                                 <label style="margin: 0px 5px">{{ twit.twit.author.get_full_name }}
                                                 </label> <label class="text-muted">@{{ twit.twit.author.username }}</label>
                                             </a>
@@ -109,7 +109,7 @@
                                     </h6>
                                     <p class="card-text" style="margin-left: 2.5rem">{{ twit.twit.twit }}</p>
                                     <div class="d-flex justify-content-evenly">
-                                        <a href="{% url 'twit:comment' pk=twit.pk%}" class="btn">comment</a>
+                                        <a href="{% url 'twit:comment' pk=twit.twit.pk%}" class="btn">comment</a>
                                         <button class="btn">retwit</button>
                                         <form method="post" action="{% url 'twit:like' pk=twit.pk%}?url=profile&user=true">{% csrf_token %}
                                         <input value="like" name="like" id="like" type="submit" class="btn"
